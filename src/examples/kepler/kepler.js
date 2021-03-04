@@ -112,9 +112,9 @@ looker.plugins.visualizations.add({
     })
 
     // We need to fill config object with defaults if Looker doesn't send them
-    Object.keys(options).forEach((item) => {
-      if (!Object.keys(config).includes(item)) {
-        config[item] = options[item].default
+    Object.keys(options).forEach((property) => {
+      if (!Object.keys(config).includes(property)) {
+        config[property] = options[property].default
       }
     })
 
