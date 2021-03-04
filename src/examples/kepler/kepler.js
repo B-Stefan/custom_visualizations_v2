@@ -111,8 +111,12 @@ looker.plugins.visualizations.add({
       details,
     })
 
-    // We need to bail if we don't get a properly populated config object or Kepler will crash
-    if (!Object.keys(options).every((item) => Object.keys(config).includes(item))) return
+    // We need to fill config object with defaults if Looker doesn't send them
+    Object.keys(options).forEach((item) => {
+      if (!Object.keys(config).includes(item)) {
+        config[item] = options[item].default
+      }
+    })
 
     // Clear any errors from previous updates
     this.clearErrors()
