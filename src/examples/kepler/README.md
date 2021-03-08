@@ -85,7 +85,7 @@ and input both the Mapbox token and stlye URL.
 ## GBFS data
 
 It's quite awkward having to include base layers on the map in each row of the Looker dataset itself,
-so this plugin will take a comma separated list of URLs of [GBFS feeds](https://github.com/NABSA/gbfs#what-is-gbfs) – currently only `regions` and `station_information` feeds are handled. These will
+so this plugin will take a comma separated list of URLs of [GBFS feeds](https://github.com/NABSA/gbfs#what-is-gbfs) – currently `regions`, `geofencing_zones`, `station_information` and index (under `en.feeds`) feeds are handled. These will
 be displayed underneath the data coming from Looker and excluded from the map bounds calculations.
 They are also cached on first load, so won't be reloaded each time the Looker data changes.
 
