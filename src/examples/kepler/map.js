@@ -55,7 +55,7 @@ const nonConfigActions = [
   'LOAD_MAP_STYLES',
   'LOAD_CUSTOM_MAP_STYLE',
 ]
-let updateLookerConfig = () => false
+let updateLookerConfig = (x) => x
 const debouncedLookerConfigUpdater = debounce((updatedState, action) => {
   const configToSave = KeplerGlSchema.getConfigToSave(updatedState.keplerGl.map)
   console.log('configToSave', new Date(), action.type, configToSave)

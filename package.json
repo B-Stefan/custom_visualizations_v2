@@ -23,9 +23,7 @@
     "@babel/plugin-proposal-class-properties": "^7.7.0",
     "@babel/preset-env": "^7.7.1",
     "@babel/preset-react": "^7.7.0",
-    "@types/d3": "^5.0.0",
-    "@types/d3-sankey": "^0.7.4",
-    "@types/jquery": "^3.3.31",
+    "@types/react": ">=16",
     "babel-loader": "^8.0.6",
     "css-loader": "^0.28.11",
     "jest": "^24.9.0",
@@ -40,19 +38,13 @@
     "webpack-dev-server": "3.9.0"
   },
   "dependencies": {
-    "d3": "^4.8.0",
-    "d3-sankey": "^0.10.4",
-    "jquery": "^3.3.1",
-    "kepler.gl": "^2.4.0",
+    "kepler.gl": "^2.5.0",
     "lodash.debounce": "^4.0.8",
     "lodash.isequal": "^4.5.0",
     "lodash.mergewith": "^4.6.2",
     "pako": "^1.0.10",
-    "pivottable": "^2.20.0",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
-    "react-responsive-carousel": "^3.1.51",
-    "styled-components": "^4.4.1",
-    "subtotal-multiple-aggregates": "4mile/subtotal-multiple-aggregates"
+    "styled-components": "^4.4.1"
   }
 }
