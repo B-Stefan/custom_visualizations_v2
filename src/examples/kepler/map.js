@@ -8,7 +8,7 @@ import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
 import { taskMiddleware } from 'react-palm/tasks'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import normalizeGeojson from '@mapbox/geojson-normalize'
-// import { geoToH3, h3ToGeoBoundary } from "h3-js"
+import { h3SetToMultiPolygon, h3IsValid } from "h3-js"
 import pako from 'pako'
 
 import KeplerGl from 'kepler.gl'
@@ -164,11 +164,14 @@ class Map extends Component {
     // We are using CSV as a convenient intermediate format between Looker and Kepler
     // First we process the column headers
     const columnHeaders = Object.keys(data[0])
-      .map((column) =>
+      .map((column) =>{
+        return column
         // Looker native Location data is "lat,lon" format so we need to split the column header
-        positionColumnStrings.some((item) => column.split('.').slice(-1)[0].includes(item))
+        return positionColumnStrings.some((item) => column.split('.').slice(-1)[0].includes(item))
           ? [`${column}_lat`, `${column}_lon`].join(',')
-          : column,
+          : column;
+
+      }
       )
       .join(',')
 
@@ -217,6 +220,9 @@ class Map extends Component {
       if (field.type === 'geojson') {
         geoJsonDatasetIndices.push(index)
       }
+      if (field.type === 'string' && h3IsValid(processedCsvData.rows[0][index])) {
+        geoJsonDatasetIndices.push(index)
+      }
     })
 
     // Remove GeoJSON columns from original dataset as we're adding them separately
@@ -234,11 +240,22 @@ class Map extends Component {
         let parsedGeo
         try {
           parsedGeo = JSON.parse(currentRow[index])
-        } catch (e) {}
+        } catch (e) {
+          console.warn(e.message)
+        }
         if (!parsedGeo) {
           try {
             parsedGeo = wktParser(currentRow[index])
-          } catch (e) {}
+          } catch (e) {
+            console.warn(e.message)
+          }
+        }
+        if(!parsedGeo){
+          try {
+            parsedGeo = this.h3SetToFeature(currentRow[index])
+          }catch (e){
+            console.warn(e.message)
+          }
         }
         if (parsedGeo) {
           return mergeWith(
@@ -417,6 +434,24 @@ class Map extends Component {
     this.props.lookerDoneCallback()
 
     this._updateMapData()
+  }
+
+  h3SetToFeature(hexagons, properties = {}) {
+    hexagons = Array.isArray(hexagons) ? hexagons : [hexagons]
+    const polygons = h3SetToMultiPolygon(hexagons, true);
+    // See if we can unwrap to a simple Polygon.
+    const isMultiPolygon = polygons.length > 1;
+    const type = isMultiPolygon ? "MultiPolygon" : "Polygon";
+    // MultiPolygon, single polygon, or empty array for an empty hex set
+    const coordinates = isMultiPolygon ? polygons : polygons[0] || [];
+    return {
+      type: "Feature",
+      properties,
+      geometry: {
+        type,
+        coordinates
+      }
+    };
   }
 
   componentDidUpdate(prevProps) {
