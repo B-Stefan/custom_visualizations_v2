@@ -1,4 +1,5 @@
 const path = require('path')
+const fs = require('fs')
 
 const webpackConfig = {
   mode: process.env.NODE_ENV || 'development',
@@ -25,7 +26,12 @@ const webpackConfig = {
     contentBase: path.join(__dirname, 'dist'),
     disableHostCheck: true, // this is insecure, but the only way to make the iframe work...
     compress: true,
-    https: true,
+    https: {
+      // You need a local key pem to access it via looker
+      // use e.g. https://github.com/FiloSottile/mkcert to create a valid cert
+      key: fs.readFileSync('./localhost-key.pem'),
+      cert: fs.readFileSync('./localhost.pem'),
+    },
     port: 9000,
   },
   stats: {
